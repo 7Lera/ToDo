@@ -1,0 +1,33 @@
+{# templates/task/view.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Detalii Sarcină{% endblock %}
+
+{% block body %}
+    <h1>Detalii Sarcină</h1>
+
+    <dl>
+        <dt>ID:</dt>
+        <dd>{{ todo.id }}</dd>
+
+        <dt>Titlu:</dt>
+        <dd>{{ todo.title }}</dd>
+
+        <dt>Descriere:</dt>
+        <dd>{{  todo.description }}</dd>
+
+        <dt>Data Limită:</dt>
+        <dd>{{ todo.dueDate|date('Y-m-d') }}</dd>
+
+        <dt>Data Crearii</dt>
+        <dd>{{ todo.createdAt|date('Y-m-d H:m:s') }}</dd>
+
+        <dt>Categorie:</dt>
+        <dd>{{ todo.category ? todo.category.name : 'N/A' }}</dd>
+    </dl>
+
+    <p>
+        <a href="/todo">Înapoi la Lista de Sarcini</a>
+    </p>
+{% endblock %}

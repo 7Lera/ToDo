@@ -1,0 +1,34 @@
+{# templates/task/list.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista de Sarcini{% endblock %}
+
+{% block body %}
+    <h1>Lista de Sarcini</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Titlu</th>
+                <th>Data Limită</th>
+                <th>Categorie</th>
+                <th>Acțiuni</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for todo in todos %}
+                <tr>
+                    <td>{{ todo.title }}</td>
+                    <td>{{ todo.dueDate ? todo.dueDate|date('Y-m-d') : 'N/A' }}</td>
+                    <td>{{ todo.category ? todo.category.name : 'N/A' }}</td>
+                    <td>
+                        <a href="/todo/{{todo.id}}">Vizualizare</a>
+                        <a href="/todo/update/{{todo.id}}">Actualizare</a>
+                        <a href="/todo/delete/{{todo.id}}" onclick="return confirm('Sigur doriți să ștergeți această sarcină?')">Șterge</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
