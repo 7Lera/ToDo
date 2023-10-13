@@ -4,30 +4,82 @@
 
 {% block title %}Detalii Sarcină{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body {
+            text-align: center;
+        }
+
+        h1 {
+            color: #333; 
+        }
+
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1.5px solid #ddd; 
+            text-align: left;
+        }
+
+        th {
+            background-color: #fad8e0;
+            font-weight: bold;
+        }
+
+        a.button-link {
+            display: inline-block;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            background-color: #fad8e0;
+            color: #940426;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        a.button-link:hover {
+            background-color: #e89bb2;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
-    <h1>Detalii Sarcină</h1>
+    <h1>DETALII SARCINĂ</h1>
 
-    <dl>
-        <dt>ID:</dt>
-        <dd>{{ todo.id }}</dd>
-
-        <dt>Titlu:</dt>
-        <dd>{{ todo.title }}</dd>
-
-        <dt>Descriere:</dt>
-        <dd>{{  todo.description }}</dd>
-
-        <dt>Data Limită:</dt>
-        <dd>{{ todo.dueDate|date('Y-m-d') }}</dd>
-
-        <dt>Data Crearii</dt>
-        <dd>{{ todo.createdAt|date('Y-m-d H:m:s') }}</dd>
-
-        <dt>Categorie:</dt>
-        <dd>{{ todo.category ? todo.category.name : 'N/A' }}</dd>
-    </dl>
+    <table>
+        <tr>
+            <th>ID:</th>
+            <td>{{ todo.id }}</td>
+        </tr>
+        <tr>
+            <th>Titlu:</th>
+            <td>{{ todo.title }}</td>
+        </tr>
+        <tr>
+            <th>Descriere:</th>
+            <td>{{ todo.description|nl2br }}</td>
+        </tr>
+        <tr>
+            <th>Data Limită:</th>
+            <td>{{ todo.dueDate|date('Y-m-d') }}</td>
+        </tr>
+        <tr>
+            <th>Data Crearii:</th>
+            <td>{{ todo.createdAt|date('Y-m-d H:m:s') }}</td>
+        </tr>
+        <tr>
+            <th>Categorie:</th>
+            <td>{{ todo.category ? todo.category.name : 'N/A' }}</td>
+        </tr>
+    </table>
 
     <p>
-        <a href="/todo">Înapoi la Lista de Sarcini</a>
+        <a href="/todo" class="button-link">Înapoi la Lista de Sarcini</a>
     </p>
 {% endblock %}

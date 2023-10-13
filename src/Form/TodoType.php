@@ -22,6 +22,9 @@ class TodoType extends AbstractType
             ->add('category', EntityType::class, ['class'=>Category::class, 'choice_label'=>'name', 'constraints'=>(new Type('App\Entity\Category', 'Categoria nu este valida.'))])
             ->add('submit', SubmitType::class, [
                 'label' => 'Salveaza',
+                'attr' => [
+                    'class' => 'btn-save',
+                    ],
             ]);
         ;
     }
@@ -33,3 +36,6 @@ class TodoType extends AbstractType
         ]);
     }
 }
+
+
+
