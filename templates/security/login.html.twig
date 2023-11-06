@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Log in!
+{% endblock %}
+
+{% block body %}
+<style>
+    body {
+        background-color: #f8f9fa; 
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .login-container {
+        background-color: #ffc0cb; 
+        padding: 50px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+
+    }
+
+    .form-label-group{
+        margin-bottom: 15px;
+    }
+
+    button {
+        margin-top: 10px; 
+        background-color:#C0B9BF;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        border-radius:10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.1s ease;
+    }
+    button:hover {
+        background-color: #d90166; 
+    }
+
+    .logout-container {
+        margin-top: 20px;
+    }
+
+    .btn-logout {
+        background-color:#d90166;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        border-radius: 10px;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s ease; 
+    }
+
+    .btn-logout:hover {
+        background-color: #C0B9BF; 
+    }
+
+  
+</style>
+
+<form method="post">
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    <div class="container login-container">
+        <form class="form-signin" method="post">
+            <h1 class="h3 mb-3 font-weight-normal">PLEASE SIGN IN</h1>
+            <div class="form-label-group">
+                <label for="inputUsername">Username :</label>
+                <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
+            </div>
+            <div class="form-label-group">
+                <label for="inputPassword">Password :</label>
+                <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button class="btn btn-lg btn-primary btn-block mt-3" type="submit">
+                Sign in
+            </button>
+        </form>
+        
+        {% if app.user %}
+            <div class="logout-container">
+                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}" class="btn-logout">Logout</a>
+            </div>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

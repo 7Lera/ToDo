@@ -10,22 +10,40 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class TodoType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('title')
-            ->add('description')
-            ->add('dueDate')
-            ->add('category', EntityType::class, ['class'=>Category::class, 'choice_label'=>'name', 'constraints'=>(new Type('App\Entity\Category', 'Categoria nu este valida.'))])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Salveaza',
-                'attr' => [
-                    'class' => 'btn-save',
-                    ],
-            ]);
+        ->add('title', null, [
+            'constraints' => [
+                new NotBlank(['message' => 'Title cannot be blank.']),
+                new Length(['max' => 255, 'maxMessage' => 'Title cannot be longer than {{ limit }} characters.']),
+            ],
+        ])
+        ->add('description', null, [
+            'constraints' => [
+                new NotBlank(['message' => 'Description cannot be blank.']),
+                new Length(['max' => 1000, 'maxMessage' => 'Description cannot be longer than {{ limit }} characters.']),
+            ],
+        ])
+        ->add('dueDate')
+        ->add('category', EntityType::class, [
+            'class' => Category::class,
+            'choice_label' => 'name',
+            'constraints' => [
+                new Type(['type' => 'App\Entity\Category', 'message' => 'Categoria nu este valida.']),
+            ],
+        ])
+        ->add('submit', SubmitType::class, [
+            'label' => 'Salveaza',
+            'attr' => [
+                'class' => 'btn-save',
+            ],
+        ]);
         ;
     }
 

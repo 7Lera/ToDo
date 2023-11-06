@@ -11,13 +11,20 @@ use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Task;
 use App\Form\TodoType;
+use App\Service\TaskService;
+
 
 class ToDoController extends AbstractController
 {
+    private $taskService;
+    public function __construct(TaskService $service) {
+        $this->taskService = $service;
+    }
+    
     #[Route('/todo', name: 'app_todo_list')]
     public function list(TaskRepository $taskRepository): Response
     {
-        $todos = $taskRepository->findAll();
+        $todos = $this->taskService->getTaskList();
 
         return $this->render('to_do/todos.html.twig', [
             'todos' => $todos,
@@ -38,18 +45,17 @@ class ToDoController extends AbstractController
     #[Route('/task/create', name: 'app_todo_create')]
     public function create(EntityManagerInterface $entityManager, Request $request): Response
     {
-        $task = new Task();
-        $form = $this->createForm(TodoType::class, $task, ['method' => 'POST']);
-
+        $form = $this->createForm(ToDoType::class);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($request->isMethod('POST')) {
-                $task->setCreatedAt(new \DateTime());
-                $entityManager->persist($task);
-                $entityManager->flush();
-            }
+            $title = $form->get('title')->getData();
+            $description = $form->get('description')->getData();
+            $date = $form->get('dueDate')->getData();
+            $category = $form->get('category')->getData();
 
+            $this->taskService->createTask($title, $description, $date, $category);
+            
             return $this->redirectToRoute('app_todo_list');
         }
 
@@ -59,44 +65,36 @@ class ToDoController extends AbstractController
     }
 
     #[Route('/todo/update/{id}', name: 'app_task_update')]
-    public function update(int $id, EntityManagerInterface $entityManager, Request $request, TaskRepository $taskRepository): Response
-    {
-        $task = $taskRepository->find($id);
+    public function update(int $id, EntityManagerInterface $entityManager,Request $request): Response
+    {   
+        $todo = $entityManager->getRepository(Task::class)->find($id);
 
-        if (!$task) {
-            throw $this->createNotFoundException('Task not found');
-        }
-
-        $form = $this->createForm(ToDoType::class, $task);
-
+        $form = $this->createForm(TodoType::class, $todo);
         $form->handleRequest($request);
+        
+        
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+           
+            $title = $form->get('title')->getData();
+            $description = $form->get('description')->getData();
+            $date = $form->get('dueDate')->getData();
+            $category = $form->get('category')->getData();
+            $this->taskService->editTask($id, $title, $description, $date, $category);
 
             return $this->redirectToRoute('app_todo_list');
         }
 
-        return $this->render('to_do/index.html.twig', [
-            'add_form' => $form->createView(),
-            'task' => $task,
-        ]);
+        return $this->render('to_do/index.html.twig', ['add_form' => $form->createView()]);
     }
 
     #[Route('/todo/delete/{id}', name: 'app_task_delete')]
-    public function delete(int $id, EntityManagerInterface $entityManager, TaskRepository $taskRepository): Response
+    public function delete(int $id ): Response
     {
-        $task = $taskRepository->find($id);
-
-        if (!$task) {
-            throw $this->createNotFoundException('Task not found');
-        }
-
-        $entityManager->remove($task);
-        $entityManager->flush();
-
+    
+        $this->taskService->deleteTask($id);
+        
         return $this->redirectToRoute('app_todo_list');
     }
 
-    
 
 }
